@@ -12,6 +12,46 @@ class Handler extends ExceptionHandler
      *
      * @var array<int, string>
      */
+
+    public function render($request, Throwable $exception)
+    {
+        // Принудительное ожидание JSON для всех API-запросов
+        if ($request->is('api/*') || $request->expectsJson()) {
+            // Обработка ошибок валидации
+            if ($exception instanceof \Illuminate\Validation\ValidationException) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ошибка валидации',
+                    'errors' => $exception->errors(),
+                ], 422);
+            }
+
+            // Обработка ошибок аутентификации
+            if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated',
+                ], 401);
+            }
+
+            // Обработка ошибок авторизации
+            if ($exception instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Forbidden',
+                ], 403);
+            }
+
+            // Обработка любых других ошибок
+            return response()->json([
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+
+        // Возвращаем поведение по умолчанию для не-API-запросов
+        return parent::render($request, $exception);
+    }
     protected $dontFlash = [
         'current_password',
         'password',

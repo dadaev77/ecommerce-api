@@ -19,19 +19,32 @@ class AuthController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
 
-        return new UserResource($user);
+            return response()->json([
+                'success' => true,
+                'message' => 'Registration successful!',
+                'user' => new UserResource($user),
+            ], 201);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration failed. Please try again.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function login(LoginRequest $request)
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Неверные учетные данные'], 401);
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
         $user = Auth::user();
@@ -48,6 +61,6 @@ class AuthController extends Controller
     {
         Auth::user()->tokens()->delete();
 
-        return response()->json(['message' => 'Вышел из системы успешно'], 200);
+        return response()->json(['message' => 'Logged out successfully'], 200);
     }
 }

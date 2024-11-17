@@ -18,4 +18,17 @@ class UserResource extends JsonResource
             'updated_at' => $this->resource->updated_at->toDateTimeString(),
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Поле имени обязательно.',
+            'email.required' => 'Поле электронной почты обязательно.',
+            'email.email' => 'Электронная почта должна быть действительным адресом электронной почты.',
+            'email.unique' => 'Электронная почта уже зарегистрирована.',
+            'password.required' => 'Поле пароля обязательно.',
+            'password.min' => 'Пароль должен быть не менее 6 символов.',
+            'password.confirmed' => 'Подтверждение пароля не совпадает.',
+        ];
+    }
 }
