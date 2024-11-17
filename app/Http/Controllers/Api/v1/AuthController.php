@@ -20,10 +20,12 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         try {
+            $data = $request->validated(); // Получаем проверенные данные
+
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
             ]);
 
             return response()->json([
@@ -31,7 +33,6 @@ class AuthController extends Controller
                 'message' => 'Регистрация прошла успешно!',
                 'user' => new UserResource($user),
             ], 201);
-
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
