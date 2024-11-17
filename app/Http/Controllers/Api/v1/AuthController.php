@@ -17,7 +17,7 @@ class AuthController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): ?\Illuminate\Http\JsonResponse
     {
         try {
             $data = $request->validated(); // Получаем проверенные данные
@@ -42,7 +42,7 @@ class AuthController extends Controller
         }
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json(['message' => 'Неверные учетные данные'], 401);
@@ -58,7 +58,7 @@ class AuthController extends Controller
     }
 
 
-    public function logout()
+    public function logout(): \Illuminate\Http\JsonResponse
     {
         Auth::user()->tokens()->delete();
 

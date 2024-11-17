@@ -14,7 +14,7 @@ class RegisterTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_successful_registration()
+    public function test_successful_registration(): void
     {
         $data = [
             'name' => 'Test User',
@@ -44,7 +44,7 @@ class RegisterTest extends TestCase
         ]);
     }
 
-    public function test_registration_failure()
+    public function test_registration_failure(): void
     {
         // Подготавливаем данные
         $data = [
